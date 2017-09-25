@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F037F04B1F78904400D05078 /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = F037F04A1F78904400D05078 /* makefile */; };
+		F037F04D1F78925D00D05078 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F037F04C1F78925D00D05078 /* README.md */; };
 		F03E05FD1F6ED502005F1F41 /* minish.c in Sources */ = {isa = PBXBuildFile; fileRef = F0566E191F6EB725004A32DD /* minish.c */; };
 /* End PBXBuildFile section */
 
@@ -24,8 +26,8 @@
 
 /* Begin PBXFileReference section */
 		F011DE711F6D6F0F0094A016 /* Assignment1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Assignment1; sourceTree = BUILT_PRODUCTS_DIR; };
-		F011DE741F6D6F0F0094A016 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		F03E05FB1F6ED4A4005F1F41 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		F037F04A1F78904400D05078 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		F037F04C1F78925D00D05078 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F0566E191F6EB725004A32DD /* minish.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minish.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,9 +61,9 @@
 		F011DE731F6D6F0F0094A016 /* Assignment1 */ = {
 			isa = PBXGroup;
 			children = (
-				F011DE741F6D6F0F0094A016 /* main.c */,
 				F0566E191F6EB725004A32DD /* minish.c */,
-				F03E05FB1F6ED4A4005F1F41 /* test.c */,
+				F037F04A1F78904400D05078 /* makefile */,
+				F037F04C1F78925D00D05078 /* README.md */,
 			);
 			path = Assignment1;
 			sourceTree = "<group>";
@@ -123,6 +125,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F037F04D1F78925D00D05078 /* README.md in Sources */,
+				F037F04B1F78904400D05078 /* makefile in Sources */,
 				F03E05FD1F6ED502005F1F41 /* minish.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

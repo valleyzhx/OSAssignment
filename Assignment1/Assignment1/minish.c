@@ -11,12 +11,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #define kLength 100
 
 #define INNER 1
-#define DEBUG 1
-#define DEBUGListJobs 1
+#define DEBUG 0
+#define DEBUGListJobs 0
 
 #if DEBUG
 #define DELog(fmt,...) printf("\n=== DEBUG Print ===\n"); printf(fmt, __VA_ARGS__); printf("\n=== DEBUG End Print ===\n");
@@ -29,22 +30,27 @@ typedef enum {
     ProcessModeBackground = 1,
 } ProcessMode;
 
-
 typedef struct {
     pid_t pid;
     char *status;
     char *commandName;
 } ProcessStatus;
-
-ProcessStatus *array;
-
+ProcessStatus array[kLength];
+int processIndex = 0;
+int latestPid = 0;
 
 #pragma mark- run command
 
 int innerCommand(char *command[],int *error){
-   
     if (strcmp(command[0],"exit\0")==0) {
-        exit(0);
+        for (int i=0; i<processIndex; i++) {
+            ProcessStatus proStatus = array[i];
+            kill(proStatus.pid, SIGKILL);
+            kill(latestPid, SIGKILL);
+        }
+        
+        kill(0, SIGTERM);
+        
         return 1;
     }else if (strcmp(command[0],"pwd\0")==0){
         char result[kLength];
@@ -60,12 +66,12 @@ int innerCommand(char *command[],int *error){
             printf("CD dir: %s\n",result);
         }else{
             *error = 1;
+            printf("No Such Directory\n");
         }
         return 1;
     }
     return 0;
 }
-
 int outerCommand(char *command[],int *error , ProcessMode mode){
     if (DEBUGListJobs && mode == ProcessModeBackground) {
         sleep(3);
@@ -73,118 +79,78 @@ int outerCommand(char *command[],int *error , ProcessMode mode){
     int err = execvp(command[0],command);// relative path, file, params
     
     if (err==-1) {
-        *error = 1;
-        printf("Run Command Error!\n");
+        *error = EXIT_FAILURE;
+        printf("Run Command Error: %d\n",*error);
     }
-
+    
     return 0;
 }
-
-int customCommand(char *command[]){
-    
+int listJobsAction(char *command[]){
+    int returnNum = 0;
     if (strcmp(command[0],"listjobs\0")==0) {
-        DELog("listjobs aready == %d",555);
-        exit(555);
-        return 1;
+        for (int i=0; i<processIndex; i++) {
+            ProcessStatus proStatus = array[i];
+            int status = -1;
+            waitpid(proStatus.pid,&status,WNOHANG);
+            if (status == EXIT_SUCCESS) {
+                proStatus.status = "FINISH";
+            }else if(status != -1){
+                continue;
+            }
+            array[i] = proStatus;
+            printf(" %s with PID %d Status:%s\n",proStatus.commandName,proStatus.pid,proStatus.status);
+        }
+        returnNum = 1;
+    }else if (strcmp(command[0],"fg\0")==0){
+        int pid = (atoi)(command[1]);
+//        printf("fg -> pid : %d",pid);
+        while (waitpid(pid,NULL,WUNTRACED)!=pid) {
+            
+        }
+        returnNum = 1;
+
     }
-    return 0;
+    return returnNum;
 }
 
 
 void runCommand(char *command[],ProcessMode mode){
-    
-    int error = 0;
-    
-    if (customCommand(command)) {// check whether custom command
-        
-    }else{
-        outerCommand(command,&error,mode);
-    }
-    
-    
+    int error = EXIT_SUCCESS;
+    outerCommand(command,&error,mode);
     exit(error);
-    
 }
-
-
 #pragma mark- runProcess
-
 void runProcess(char *command[],ProcessMode mode,ProcessStatus *pro){
     pid_t pid;
-    
     int error = 0;
-    if (innerCommand(command,&error)) {// inner command, perform directly
-        
-    }else{
-        
-        if (mode == ProcessModeBackground) {
-            //pipe(fd);
-        }
-        
-        
-        pid=fork(); // creat process
-        if (pid <0) {
-            printf("fork() error!");
-            exit(1);
-        }else if (pid == 0) // child process
-        {
-            runCommand(command,mode);
-            
-        }else { // father process
-            if (mode == ProcessModeBackground) {
-                pro->pid = pid;
-                DELog("new pid:%d %s",pro->pid,pro->commandName);
+    if (!innerCommand(command, &error)) {//if inner command, perform directly , else =>
+        if (!listJobsAction(command)) { // if not listjobs
+            pid = fork();
+            if (pid <0) {
+                printf("fork() error!");
+                exit(EXIT_FAILURE);
             }
-            
-        }
-        int status;
-        if (mode == ProcessModeForeground) {
-            waitpid(pid,&status,0);
-        }
-        if (mode == ProcessModeBackground) {
-            
-            int length = sizeof(array)/sizeof(array[0]);
-            
-            for (int i=0; i<length; i++) {
-                ProcessStatus proStatus = array[i];
-                DELog("run :%d , name: %s\n",proStatus.pid,proStatus.commandName);
-                if (proStatus.pid == pid) {
-                    proStatus.status = "Finish";
-                    array[i] = proStatus;
-                    break;
-                }
-            }
-            if (length == 0) {
-                ProcessStatus arr[]={*pro};
-                array = arr;
-            }
-            
-            
-        }else if (status == 555){
-            DELog("end 555!%s\n","sss");
-            int length = sizeof(array)/sizeof(array[0]);
-            if (length>0) {
-                printf("List of backgrounded processes:\n");
-                
-            }
-            for (int i=0; i<length; i++) {
-                ProcessStatus proStatus = array[i];
-                if (proStatus.pid == 0) {
-                    break;
-                }
-                printf(" %s with PID %d Status:%s\n",proStatus.commandName,proStatus.pid,proStatus.status);
-            }
-        }
-        
+            int status;
+            if (pid == 0) { //child process
+                runCommand(command,mode);
+            }else{//father process
 
+                if (mode == ProcessModeForeground) {// foreground mode, should wait
+                    latestPid = pid;
+                    while (waitpid(pid,&status,0)!=pid);
+                }else{
+                    pro->pid = pid;
+                    array[processIndex] = *pro;
+                    processIndex++;
+                }
+            }
+        }
     }
-
+    
+    
 }
-
-
 #pragma mark- makeCommand
 ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus){
-    
     int wordIndex = 0;
     int letterIndex = 0;
     
@@ -192,7 +158,6 @@ ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus
     char word[kLength];
     bool isEnd = false;
     ProcessMode mode = ProcessModeForeground;
-    
     for (int i=0; i<length; i++) {
         char c = buf[i];//every letter
         if (c == ' ') {// make an word
@@ -203,6 +168,9 @@ ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus
         }
         if (c == '&' && buf[i-1]==' '&&buf[i+1]=='\n') {
             
+            c = '\0';
+            command[wordIndex] = NULL;
+            
             char *com = malloc(sizeof(char) * kLength);
             strncpy(com, buf,length-1);
             com[length-1] = '\0';
@@ -210,8 +178,8 @@ ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus
             ProcessStatus pro = {0,"RUNNING", com};
             *proStatus = pro;
             mode = ProcessModeBackground;
+            return mode;
         }
-        
         word[letterIndex] = c;
         letterIndex++;
         
@@ -223,7 +191,6 @@ ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus
             memset(word,0,kLength);
             letterIndex = 0;
             wordIndex++;
-            
             if (isEnd) { // command end
                 command[wordIndex] = NULL;
                 return mode;
@@ -234,13 +201,17 @@ ProcessMode makeCommand(const char *buf,char *command[],ProcessStatus *proStatus
     return mode;
 }
 
+void intHandler(int dummy){
+    DELog("dummy: %d",dummy)
+    kill(latestPid, SIGKILL);
+}
 #pragma mark- main
 
 int main(int argc, const char * argv[]) {
-    printf("minish>");
+    signal(SIGINT, intHandler);
     char buf[kLength];
     while (1) {
-        //DELog("input: %s",buf);
+        printf("minish>");
         fgets(buf,kLength,stdin);
         char *command[kLength];
         ProcessStatus pro;
@@ -248,6 +219,5 @@ int main(int argc, const char * argv[]) {
         runProcess(command, mode,&pro);
         
     }
-    
     return 0;
 }
