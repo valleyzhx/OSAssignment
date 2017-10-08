@@ -4,7 +4,7 @@
 #include <asm/uaccess.h>
 #include <linux/printk.h>
 #include <linux/slab.h>
-asmlinkage int my_xtime(struct timespec *current_time){
+asmlinkage int sys_my_xtime(struct timespec *current_time){
     
     if (access_ok(VERIFY_WRITE, current_time, sizeof(current_time))) {
         
@@ -15,4 +15,4 @@ asmlinkage int my_xtime(struct timespec *current_time){
     
     return 0;
 }
-EXPORT_SYMBOL(my_xtime);
+EXPORT_SYMBOL(sys_my_xtime);
