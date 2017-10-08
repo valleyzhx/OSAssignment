@@ -7,16 +7,19 @@
 //
 
 #include <stdio.h>
-#include <linux/kernel.h>
-
-long my_xtime(struct timespec *current_time){
-    
-    printk(KERN_ALERT "Hello World! %d\n", count++);
-    return current_time->tv_nsec;
-}
+#include<unistd.h>
+#include<linux/unistd.h>
+#include<linux/time.h>
+#define __NR_sys_my_xtime 333
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    printf("Hello, World!\n");
+    struct timespec ts;
+    int error = syscall(__NR_sys_my_xtime,&ts);
+    
+    if (error) {
+        return error;
+    }
+    
     return 0;
 }
