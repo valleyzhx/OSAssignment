@@ -7,9 +7,9 @@
 
 asmlinkage int sys_my_xtime(struct timespec *current_time){
     
-    if (access_ok(VERIFY_WRITE, current_time, sizeof(current_time))) {
+    if (access_ok(VERIFY_WRITE, current_time, sizeof(struct timespec))) {
         struct timespec  time = current_kernel_time();
-        int error =  copy_to_user(current_time,&time,sizeof(current_time));
+        int error =  copy_to_user(current_time,&time,sizeof(struct timespec));
         if (error != 0) {
             printk(KERN_ALERT "Copy Error:%d",error);
         }
