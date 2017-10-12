@@ -19,12 +19,13 @@ int main(int argc, const char * argv[]) {
     struct timespec ts;
     int ret = 0;
     ret = syscall(__NR_sys_my_xtime,&ts);
-    printf("ts time:  %.9ld \n,",ts.tv_nsec);
+    printf("ts time:  %.9ld \n",ts.tv_nsec);
     printf("ret is: %d\n",ret);
     
     
     if (errno) {
-        
+        printf("errno: %d",errno);
+        return errno;
     }
     
     
