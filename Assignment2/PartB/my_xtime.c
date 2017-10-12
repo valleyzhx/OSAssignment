@@ -13,7 +13,7 @@ asmlinkage int sys_my_xtime(struct timespec *current_time){
         if (error != 0) {
             printk(KERN_ALERT "Copy Error:%d",error);
         }
-        printk(KERN_ALERT "current_time in system: %.9ld!\n",(long long)time.tv_nsec);
+        printk(KERN_ALERT "current_time in system: %.9ld!\n",time.tv_nsec);
         return 0;
     }
     return -EFAULT;
