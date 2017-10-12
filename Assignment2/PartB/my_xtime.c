@@ -11,9 +11,10 @@ asmlinkage int sys_my_xtime(struct timespec *current_time){
         struct timespec  time = current_kernel_time();
         copy_to_user(current_time,&time,sizeof(current_time));
         printk(KERN_ALERT "current_time: %ld!\n",current_time->tv_nsec);
-        return -EFAULT;
+        return 0;
     }
+    return -EFAULT;
+
     
-    return 0;
 }
 EXPORT_SYMBOL(sys_my_xtime);
