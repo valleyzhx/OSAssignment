@@ -16,7 +16,7 @@ int main(int argc, const char * argv[]) {
     // insert code here...
     struct timespec ts;
     int error = syscall(__NR_sys_my_xtime,&ts);
-    
+    printf("ts time:  %ld \n,",ts.tv_nsec);
     if (error) {
         return error;
     }
