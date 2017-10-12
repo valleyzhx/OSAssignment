@@ -10,7 +10,7 @@ asmlinkage int sys_my_xtime(struct timespec *current_time){
     if (access_ok(VERIFY_WRITE, current_time, sizeof(current_time))) {
         struct timespec  time = current_kernel_time();
         copy_to_user(current_time,&time,sizeof(current_time));
-        printk(KERN_ALERT "current_time in system: %ld!\n",current_time->tv_nsec);
+        printk(KERN_ALERT "current_time in system: %.9ld!\n",(long long)time.tv_nsec);
         return 0;
     }
     return -EFAULT;
