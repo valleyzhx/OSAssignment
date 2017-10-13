@@ -1,0 +1,103 @@
+commit dbe3fcc6d9afd09cae4790eb7779760ea5c5671e
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 17:33:35 2017 -0400
+
+    print errno
+
+commit 906666466b9cc672cc81607d4bd6e1c4db0e79a0
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 17:25:35 2017 -0400
+
+    time length
+
+commit feedbaf2af168239ccf0c28e4bdcb11cdac6293d
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 17:18:12 2017 -0400
+
+    sizeof struct
+
+commit c7fa2a8d42c63e4ebc76f7a002c71bb7a9302809
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 16:53:44 2017 -0400
+
+    copy error print
+
+commit 2cf3b57c09cf62e4931b5c18c6adbc46fdcedbf4
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 16:51:33 2017 -0400
+
+    kernel put problem
+
+commit d9b763d3de95848ae5d9222f06f1cd87244d86aa
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 14:52:34 2017 -0400
+
+    systemCall.c output
+
+commit 7f51001630131716d515edcdc62562bd380197b9
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 14:46:26 2017 -0400
+
+    myxtime output
+
+commit 191299494eb3e91b2c41c93e37f5083fcde16fb7
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 14:42:22 2017 -0400
+
+    return bug
+
+commit 9564c8971e5c3ef98fbfe56556a50b4856695a89
+Author: valleyzhx <valleyzhx@gmail.com>
+Date:   Thu Oct 12 11:20:50 2017 -0700
+
+    syscall_64
+
+commit 869b0797cb55baed87e81bb1a0bff29ffee250f2
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Oct 12 13:48:11 2017 -0400
+
+    copy to user
+
+commit 388585f43f72266fb76972c9d67a7294f264cc6d
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Sun Oct 8 12:48:21 2017 -0400
+
+    system call
+
+commit 15b381413647c2b94d5551f4ef752f2bc0597a28
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Sun Oct 8 12:30:48 2017 -0400
+
+    finish
+
+commit 64c50b46fb4af27019ee1a85230e03759396fb54
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Sep 28 15:51:21 2017 -0400
+
+    git log screenshot
+
+commit 2f83432604a1b4fe1330fe0e1f82d410685d60b8
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Thu Sep 28 15:28:19 2017 -0400
+
+    screenshot for assignment 2
+
+commit 48894e5dffe2e04f0f715ac8b6031b084438cdad
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Wed Sep 27 14:50:25 2017 -0400
+
+    systemCall init
+
+commit 41c0350947e627935a38621a0b867dc5fcc81a0f
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Mon Sep 25 17:01:59 2017 -0400
+
+    assignment1 finish
+
+commit 460f16c3d831c4c36cdf5853be974707f2e25e73
+Author: Xiang <valleyzhx@gmail.com>
+Date:   Mon Sep 18 18:19:54 2017 -0400
+
+    os assignment init
+    
+    assignment 1
