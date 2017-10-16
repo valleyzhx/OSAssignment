@@ -36,10 +36,10 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         getnstimeofday(&time_day);
         
     
-        char *buf = (char *)kmalloc(200,GFP_KERNEL);
+        char buf[200];
         sprintf(buf, "current_kernel_time: %9ld %6ld\ngetnstimeofday: %9ld %6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
         printk(KERN_ALERT "%s\n",buf);
-        err =  copy_to_user(out, buf, sizeof(buf));
+        err =  copy_to_user(out, buf, 200);
         if (err != 0) {
             printk(KERN_ALERT "Copy Error:%d",err);
         }
