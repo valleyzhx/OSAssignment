@@ -37,7 +37,7 @@ int main(){
     for(int i=0; i < N; i++) {
         /* fix the output format appropriately in the above line */
         struct timeval time = gtodTimes[i];
-        printf("user-leve gettimeofday:%.9ld %.6ld\n%s",time.tv_sec,time.tv_usec, procClockTime[i]);
+        printf("user-leve gettimeofday:%.9ld %.6ld\n%s\n",time.tv_sec,time.tv_usec, procClockTime[i]);
     }
     return 0;
 }

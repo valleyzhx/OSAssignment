@@ -37,9 +37,9 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         
     
         char *buf = (char *)kmalloc(200,GFP_KERNEL);
-        sprintf(buf, "current_kernel_time: %.9ld %.6ld\ngetnstimeofday: %.9ld %.6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
-        printk(KERN_ALERT "%s",buf);
-        err =  copy_to_user(out, buf, strlen(buf)+1);
+        sprintf(buf, "current_kernel_time: %9ld %6ld\ngetnstimeofday: %9ld %6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
+        printk(KERN_ALERT "%s\n",buf);
+        err =  copy_to_user(out, buf, 200);
         if (err != 0) {
             printk(KERN_ALERT "Copy Error:%d",err);
         }
@@ -99,12 +99,8 @@ int __init mytime_init(void)
 // called when module is removed
 void __exit mytime_exit(void)
 {
-   int error =  misc_deregister(&my_misc_device);
+    misc_deregister(&my_misc_device);
     printk(KERN_ALERT "mytime exit!!\n");
-    if (error) {
-        printk(KERN_ALERT "misc_deregister error: %d!\n",error);
-        return error;
-    }
     return SUCCESS;
 }
 
