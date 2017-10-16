@@ -29,7 +29,7 @@ static int my_open(struct inode *inode, struct file *file)
 }
 static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *ppos)
 {
-    int err = -EFAULT;
+    int err = 0;
     if (access_ok(VERIFY_WRITE, out, len)) {
         struct timespec time = current_kernel_time();
         struct timespec time_day;
@@ -39,15 +39,19 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         char buf[200];
         sprintf(buf, "current_kernel_time: %9ld %6ld\ngetnstimeofday: %9ld %6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
         printk(KERN_ALERT "%s\n",buf);
-        err =  copy_to_user(out, &buf, 200);
+        err =  copy_to_user(out, buf, strlen(buf));
+        printk(KERN_ALERT "Str length:%ld",strlen(buf));
+
         if (err != 0) {
             printk(KERN_ALERT "Copy Error:%d",err);
+            return -EFAULT;
         }
         //kfree(buf);
+    }else{
+        -EFAULT;
     }
     
-    
-    return err;
+    return SUCCESS;
 }
 static ssize_t my_write(struct file *file, const char __user *buf,
                             size_t len, loff_t *ppos)
