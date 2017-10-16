@@ -25,6 +25,8 @@ int main(){
     for(int i=0; i < N; i++)
     {
         gettimeofday(&gtodTimes[i], 0);
+        
+        procClockTime[i] =  malloc(MAX_LENGTH);
         int bytes_read = read(fd, procClockTime[i], MAX_LENGTH);
         /* check for errors HERE */
         if (bytes_read <0) {

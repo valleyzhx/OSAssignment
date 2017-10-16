@@ -39,7 +39,7 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         char buf[200];
         sprintf(buf, "current_kernel_time: %9ld %6ld\ngetnstimeofday: %9ld %6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
         printk(KERN_ALERT "%s\n",buf);
-        err =  copy_to_user(out, buf, strlen(buf)+1);
+        err =  copy_to_user(out, buf, 200);
         printk(KERN_ALERT "Str length:%ld\n",strlen(buf));
 
         if (err != 0) {
