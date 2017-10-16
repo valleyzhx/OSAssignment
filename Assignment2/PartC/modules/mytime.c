@@ -101,7 +101,6 @@ void __exit mytime_exit(void)
 {
     misc_deregister(&my_misc_device);
     printk(KERN_ALERT "mytime exit!!\n");
-    return SUCCESS;
 }
 
 module_init(mytime_init);
