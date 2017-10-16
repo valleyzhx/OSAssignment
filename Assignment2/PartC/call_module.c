@@ -19,7 +19,7 @@ int main(){
     int fd = open("/dev/mytime", O_RDONLY);
     /* check for errors HERE */
     if(fd<0){
-        printf("open /dev/mytime Error: %d",fd);
+        printf("open /dev/mytime Error: %d\n",fd);
     }
     
     for(int i=0; i < N; i++)
@@ -28,7 +28,7 @@ int main(){
         int bytes_read = read(fd, procClockTime[i], MAX_LENGTH);
         /* check for errors HERE */
         if (bytes_read <0) {
-            printf("read /dev/mytime Error: %d",bytes_read);
+            printf("read /dev/mytime Error: %d\n",bytes_read);
         }
     }
     
