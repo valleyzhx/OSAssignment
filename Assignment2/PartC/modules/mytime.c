@@ -13,10 +13,11 @@
 MODULE_LICENSE("DUAL BSD/GPL");
 
 static int my_open(struct inode *inode, struct file *file);
-static int my_read(struct file *file, char __user *out, size_t len, loff_t *ppos);
+static int my_close(struct inode *inodep, struct file *file);
+
+static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *ppos);
 static ssize_t my_write(struct file *file, const char __user *buf,
                         size_t len, loff_t *ppos);
-static int my_close(struct inode *inodep, struct file *file);
 
 
 static int my_open(struct inode *inode, struct file *file)
@@ -26,7 +27,7 @@ static int my_open(struct inode *inode, struct file *file)
     
     return SUCCESS;
 }
-static int my_read(struct file *file, char __user *out, size_t len, loff_t *ppos)
+static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *ppos)
 {
     int err = -EFAULT;
     if (access_ok(VERIFY_WRITE, out, len)) {
