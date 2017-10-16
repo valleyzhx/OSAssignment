@@ -42,7 +42,7 @@ static int my_read(struct file *file, char __user *out, size_t len, loff_t *ppos
         if (err != 0) {
             printk(KERN_ALERT "Copy Error:%d",err);
         }
-        free(buf);
+        kfree(buf);
     }
     
     
