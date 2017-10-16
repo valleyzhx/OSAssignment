@@ -82,7 +82,7 @@ static struct miscdevice my_misc_device = {
 
 
 // called when module is installed
-int __init mytime_init()
+int __init mytime_init(void)
 {
     misc_register(&my_misc_device);
     printk(KERN_ALERT "mytime init!\n");
@@ -93,7 +93,7 @@ int __init mytime_init()
 
 
 // called when module is removed
-void __exit mytime_exit()
+void __exit mytime_exit(void)
 {
     misc_deregister(&my_misc_device);
     printk(KERN_ALERT "mytime exit!!\n");
