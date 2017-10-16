@@ -40,7 +40,7 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         sprintf(buf, "current_kernel_time: %9ld %6ld\ngetnstimeofday: %9ld %6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
         printk(KERN_ALERT "%s\n",buf);
         err =  copy_to_user(out, buf, 200);
-        printk(KERN_ALERT "Str length:%ld\n",strlen(buf));
+        //printk(KERN_ALERT "Str length:%ld\n",strlen(buf));
 
         if (err != 0) {
             printk(KERN_ALERT "Copy Error:%d\n",err);
@@ -56,13 +56,13 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
 static ssize_t my_write(struct file *file, const char __user *buf,
                             size_t len, loff_t *ppos)
 {
-    printk(KERN_ALERT "Yummy - I just ate %ld bytes\n", len);
+    printk(KERN_ALERT "Writing %ld bytes\n", len);
     return len;
 }
 
 static int my_close(struct inode *inodep, struct file *file)
 {
-    printk(KERN_ALERT "Sleepy time\n");
+    printk(KERN_ALERT "Close! \n");
     return SUCCESS;
 }
 

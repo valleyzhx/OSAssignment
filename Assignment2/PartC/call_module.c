@@ -17,10 +17,12 @@ char *procClockTime[N];
 
 
 int main(){
+    
     int fd = open("/dev/mytime", O_RDONLY);
     /* check for errors HERE */
     if(fd<0){
         printf("open /dev/mytime Error: %d\n",fd);
+        return fd;
     }
     
     for(int i=0; i < N; i++)
@@ -32,6 +34,7 @@ int main(){
         /* check for errors HERE */
         if (bytes_read <0) {
             printf("read /dev/mytime Error: %d\n",bytes_read);
+            return bytes_read;
         }
     }
     
