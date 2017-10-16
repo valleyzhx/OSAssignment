@@ -6,6 +6,8 @@
 #include <asm/uaccess.h>
 #include <linux/printk.h>
 
+#define SUCCESS 0
+
 
 MODULE_LICENSE("DUAL BSD/GPL");
 
@@ -18,13 +20,8 @@ static int my_close(struct inode *inodep, struct file *file);
 
 static int my_open(struct inode *inode, struct file *file)
 {
-    static int counter = 0;
-    if (Device_Open) return -EBUSY;
     
-    Device_Open++;
-    printk(KERN_ALERT "Open times: %d!\n", counter++);
-    msg_Ptr = msg;
-    MOD_INC_USE_COUNT;
+    printk(KERN_ALERT "Open !\n");
     
     return SUCCESS;
 }
@@ -60,7 +57,7 @@ static ssize_t my_write(struct file *file, const char __user *buf,
 static int my_close(struct inode *inodep, struct file *file)
 {
     printk(KERN_ALERT "Sleepy time\n");
-    return 0;
+    return SUCCESS;
 }
 
 
@@ -87,7 +84,7 @@ int __init mytime_init(void)
     misc_register(&my_misc_device);
     printk(KERN_ALERT "mytime init!\n");
     
-    return 0;
+    return SUCCESS;
 }
 
 
