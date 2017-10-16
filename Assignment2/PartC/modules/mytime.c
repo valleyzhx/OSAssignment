@@ -36,7 +36,7 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         getnstimeofday(&time_day);
         
     
-        char *buf = kmalloc(200,GFP_KERNEL);
+        char *buf = (char *)kmalloc(200,GFP_KERNEL);
         sprintf(buf, "current_kernel_time: %.9ld %.6ld\ngetnstimeofday: %.9ld %.6ld\n",time.tv_sec,time.tv_nsec,time_day.tv_sec,time_day.tv_nsec);
         printk(KERN_ALERT "%s",buf);
         err =  copy_to_user(out, buf, strlen(buf)+1);
@@ -83,9 +83,14 @@ static struct miscdevice my_misc_device = {
 // called when module is installed
 int __init mytime_init(void)
 {
-    misc_register(&my_misc_device);
+    
+    int error = misc_register(&my_misc_device);
     printk(KERN_ALERT "mytime init!\n");
     
+    if (error) {
+        printk(KERN_ALERT "misc_register error: %d!\n",error);
+        return error;
+    }
     return SUCCESS;
 }
 
@@ -94,8 +99,13 @@ int __init mytime_init(void)
 // called when module is removed
 void __exit mytime_exit(void)
 {
-    misc_deregister(&my_misc_device);
+   int error =  misc_deregister(&my_misc_device);
     printk(KERN_ALERT "mytime exit!!\n");
+    if (error) {
+        printk(KERN_ALERT "misc_deregister error: %d!\n",error);
+        return error;
+    }
+    return SUCCESS;
 }
 
 module_init(mytime_init);
