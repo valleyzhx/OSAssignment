@@ -5,6 +5,7 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 #include <linux/printk.h>
+#include <linux/slab.h>
 
 #define SUCCESS 0
 
@@ -28,7 +29,7 @@ static int my_open(struct inode *inode, struct file *file)
 static int my_read(struct file *file, char __user *out, size_t len, loff_t *ppos)
 {
     int err = -EFAULT;
-    if (access_ok(VERIFY_WRITE, current_time, len)) {
+    if (access_ok(VERIFY_WRITE, out, len)) {
         struct timespec time = current_kernel_time();
         struct timespec time_day;
         getnstimeofday(&time_day);
@@ -50,7 +51,7 @@ static int my_read(struct file *file, char __user *out, size_t len, loff_t *ppos
 static ssize_t my_write(struct file *file, const char __user *buf,
                             size_t len, loff_t *ppos)
 {
-    printk(KERN_ALERT "Yummy - I just ate %d bytes\n", len);
+    printk(KERN_ALERT "Yummy - I just ate %ld bytes\n", len);
     return len;
 }
 
