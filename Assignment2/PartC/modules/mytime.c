@@ -2,6 +2,8 @@
 #include <linux/module.h>
 #include <linux/miscdevice.h>
 #include <linux/time.h>
+#include <linux/fs.h>
+#include <asm/uaccess.h>
 
 MODULE_LICENSE("DUAL BSD/GPL");
 
