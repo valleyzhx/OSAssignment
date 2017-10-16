@@ -48,7 +48,7 @@ static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *
         }
         //kfree(buf);
     }else{
-        -EFAULT;
+        return -EFAULT;
     }
     
     return SUCCESS;
