@@ -6,11 +6,16 @@
 #include <asm/uaccess.h>
 #include <linux/printk.h>
 #include <linux/slab.h>
+#include <asm/errno.h>
 
 #define SUCCESS 0
 
-
 MODULE_LICENSE("DUAL BSD/GPL");
+
+
+static int _isOpen = 0;
+
+
 
 static int my_open(struct inode *inode, struct file *file);
 static int my_close(struct inode *inodep, struct file *file);
@@ -24,6 +29,10 @@ static int my_open(struct inode *inode, struct file *file)
 {
     
     printk(KERN_ALERT "Open !\n");
+    
+    if (_isOpen) return -EBUSY;
+    
+    _isOpen = 1;
     
     return SUCCESS;
 }
@@ -62,6 +71,7 @@ static ssize_t my_write(struct file *file, const char __user *buf,
 
 static int my_close(struct inode *inodep, struct file *file)
 {
+    _isOpen = 0;
     printk(KERN_ALERT "Close! \n");
     return SUCCESS;
 }
