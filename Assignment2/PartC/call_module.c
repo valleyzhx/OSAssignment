@@ -26,7 +26,7 @@ int main(){
         gettimeofday(&gtodTimes[i], 0);
         
         procClockTime[i] =  malloc((sizeof(char))*MAX_LENGTH);
-        int bytes_read = read(fd, procClockTime[i], MAX_LENGTH);
+        int bytes_read = read(fd, procClockTime[i], (sizeof(char))*MAX_LENGTH);
         /* check for errors HERE */
         if (bytes_read <0) {
             printf("read /dev/mytime Error: %d\n",bytes_read);
