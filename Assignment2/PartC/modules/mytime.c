@@ -31,16 +31,26 @@ static int my_open(struct inode *inode, struct file *file)
     printk(KERN_ALERT "Open !\n");
     
     if (_isOpen) return -EBUSY;
+    try_module_get(THIS_MODULE);//if it fails, then the module is being removed and you should act as if it wasn't there.
     
     _isOpen = 1;
     
     return SUCCESS;
 }
+static int my_close(struct inode *inodep, struct file *file)
+{
+    _isOpen = 0;
+    module_put(THIS_MODULE); // Decrement the usage count
+    printk(KERN_ALERT "Close! \n");
+    return SUCCESS;
+}
+
+
 static ssize_t my_read(struct file *file, char __user *out, size_t len, loff_t *ppos)
 {
     int err = 0;
     if (access_ok(VERIFY_WRITE, out, len)) {
-        struct timespec time = current_kernel_time();
+        struct timespec time = current_kernel_time();//返回内核最后一次更新的xtime时间
         struct timespec time_day;
         getnstimeofday(&time_day);
         
@@ -69,13 +79,6 @@ static ssize_t my_write(struct file *file, const char __user *buf,
     return len;
 }
 
-static int my_close(struct inode *inodep, struct file *file)
-{
-    _isOpen = 0;
-    printk(KERN_ALERT "Close! \n");
-    return SUCCESS;
-}
-
 
 static struct file_operations my_fops = {
     .owner = THIS_MODULE,
@@ -99,12 +102,14 @@ int __init mytime_init(void)
 {
     
     int error = misc_register(&my_misc_device);
-    printk(KERN_ALERT "mytime init!\n");
+    printk(KERN_ALERT "mytime init:");
     
     if (error) {
         printk(KERN_ALERT "misc_register error: %d!\n",error);
         return error;
     }
+    printk(KERN_ALERT "SUCCESS\n");
+
     return SUCCESS;
 }
 
