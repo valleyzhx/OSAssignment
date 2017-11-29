@@ -28,3 +28,7 @@ else
 	# called from kernel build system: just declare what our modules are
 	obj-m := numpipe.o 
 endif
+consumer: consumer_numbers.c
+	gcc consumer_numbers.c -o consumer
+producer: producer_numbers.c
+	gcc producer_numbers.c -o producer
