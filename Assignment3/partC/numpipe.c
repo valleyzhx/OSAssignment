@@ -78,7 +78,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
             _count--;
             up(&_index_lock);
 
-            //printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
+            printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
@@ -105,7 +105,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
         _count++;
         up(&_index_lock);
 
-        //printk(KERN_ALERT "write process %d, now items number: %d\n", process,_count);
+        printk(KERN_ALERT "write process %d, now items number: %d\n", process,_count);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
@@ -142,7 +142,6 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
-    
     sema_init(&_index_lock, 1);
 
     _buffer = (int*)kmalloc(N*sizeof(int),GFP_KERNEL);
