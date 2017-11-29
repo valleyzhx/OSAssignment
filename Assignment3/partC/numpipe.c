@@ -62,7 +62,8 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
     if (access_ok(VERIFY_WRITE, out, len)) {
         down_interruptible(&_full);
         down_interruptible(&_mutex);
-        int process = _buffer[_index];
+        
+        int process = _buffer[_index-1];
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
             _index--;
