@@ -13,9 +13,9 @@
 MODULE_LICENSE("DUAL BSD/GPL");
 
 #define N 10
-static sem_t _mutex ;//lock
-static sem_t _empty ;
-static sem_t _full ;
+static struct semaphore _mutex ;//lock
+static struct semaphore _empty ;
+static struct semaphore _full ;
 
 
 static int _isOpen = 0;
@@ -40,9 +40,9 @@ static int my_open(struct inode *inode, struct file *file)
     try_module_get(THIS_MODULE);//if it fails, then the module is being removed and you should act as if it wasn't there.
     
     _isOpen = 1;
-    sem_init(&_mutex, 0, 1);
-    sem_init(&_full, 0, 0);
-    sem_init(&_empty, 0, N);
+    sema_init(&_mutex, 1);
+    sema_init(&_full, 0);
+    sema_init(&_empty, N);
 
     return SUCCESS;
 }
@@ -51,10 +51,7 @@ static int my_close(struct inode *inodep, struct file *file)
     _isOpen = 0;
     module_put(THIS_MODULE); // Decrement the usage count
     printk(KERN_ALERT "Close! \n");
-    sem_destroy(_mutex);
-    sem_destroy(_empty);
-    sem_destroy(_full);
-
+    
     return SUCCESS;
 }
 
@@ -63,8 +60,8 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
 {
     int err = 0;
     if (access_ok(VERIFY_WRITE, out, len)) {
-        down(&_full);
-        down(&_mutex);
+        down_interruptible(&_full);
+        down_interruptible(&_mutex);
         int process = _buffer[_index--];
         err = copy_to_user(out,process,len);
         if (err == SUCCESS) {
@@ -85,8 +82,8 @@ static ssize_t my_write(struct file *file, int __user *buf,
                             size_t len, loff_t *ppos)
 {
     
-    down(&_empty);
-    down(&_mutex);
+    down_interruptible(&_empty);
+    down_interruptible(&_mutex);
     
     int err = copy_from_user(_buffer[_index++],buf,len);
     if (err == SUCCESS) {
