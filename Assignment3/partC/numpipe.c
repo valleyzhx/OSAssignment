@@ -6,7 +6,7 @@
 #include <linux/printk.h>
 #include <linux/slab.h>
 #include <asm/errno.h>
-#include <asm/semaphore.h>
+#include <linux/semaphore.h>
 
 #define SUCCESS 0
 
