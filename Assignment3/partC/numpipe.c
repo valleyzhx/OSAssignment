@@ -18,7 +18,9 @@ module_param(N, int, S_IRUGO);
 
 
 
-static struct semaphore _mutex;//lock
+static struct semaphore _mutex_read;//lock
+static struct semaphore _mutex_write;//lock
+
 static struct semaphore _empty;
 static struct semaphore _full;
 
@@ -65,7 +67,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
     int err = 0;
     if (access_ok(VERIFY_WRITE, out, len)) {
         down_interruptible(&_full);
-        down_interruptible(&_mutex);
+        down_interruptible(&_mutex_read);
         
         int process = _buffer[0];
         err = copy_to_user(out,&process,len);
@@ -82,7 +84,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
-        up(&_mutex);
+        up(&_mutex_read);
         up(&_empty);
 
     }else{
@@ -96,7 +98,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
 {
     
     down_interruptible(&_empty);
-    down_interruptible(&_mutex);
+    down_interruptible(&_mutex_write);
     int process;
     int err = copy_from_user(&process,buf,len);
     if (err == SUCCESS) {
@@ -110,7 +112,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
 
-    up(&_mutex);
+    up(&_mutex_write);
     up(&_full);
     return len;
 }
@@ -139,7 +141,9 @@ int __init my_init(void)
     
     int error = misc_register(&my_misc_device);
     printk(KERN_ALERT "my init:");
-    sema_init(&_mutex, 1);
+    sema_init(&_mutex_read, 1);
+    sema_init(&_mutex_write, 1);
+
     sema_init(&_full, 0);
     sema_init(&_empty, N);
     //sema_init(&_index_lock, 1);
