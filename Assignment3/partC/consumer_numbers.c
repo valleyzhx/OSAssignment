@@ -14,7 +14,7 @@
 int main(int argc, char *argv[])
 {
 
-    int fd = open("/dev/numpipe", O_RDONLY);
+    int fd = open("/dev/numpipe", O_RDWR);
 	int num;
 
     if(fd<0){
