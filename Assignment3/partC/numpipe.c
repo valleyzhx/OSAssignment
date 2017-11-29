@@ -76,7 +76,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         return -EFAULT;
     }
     
-    return SUCCESS;
+    return len;
 }
 static ssize_t my_write(struct file *file, int __user *buf,
                             size_t len, loff_t *ppos)
