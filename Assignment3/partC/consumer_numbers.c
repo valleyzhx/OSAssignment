@@ -21,12 +21,12 @@ int main(int argc, char *argv[])
         printf("open /dev/numpipe Error: %d\n",fd);
         return fd;
     }
-
+    int count = 0;
 	while(1) {
 		// read a line
 		ssize_t ret = read(fd, &num, sizeof(int));
 		if( ret > 0) {
-			printf("consume process: %d, Bytes read: %ld\n", num,ret);
+			printf("%d consume times: %d, Bytes read: %ld\n", getpid(),++count,ret);
 		} else {
 			fprintf(stderr, "error reading ret=%ld errno=%d perror: ", ret, errno);
 			perror("");

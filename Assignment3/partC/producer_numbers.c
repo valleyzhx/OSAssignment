@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
         printf("open /dev/numpipe Error: %d\n",fd);
         return fd;
     }
+    int count=0;
 	while(1) {
 		bzero(numstr, MAXLEN);
         sprintf(numstr, "%d\n", getpid());
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "error writing ret=%ld errno=%d perror: ", ret, errno);
 			perror("");
 		} else {
-            printf("produce process: %d, Bytes written: %ld\n", num_to_write,ret);
+            printf("%d produce times:%d, Bytes written: %ld\n", num_to_write,++count,ret);
 		}
 		sleep(1);
 	}
