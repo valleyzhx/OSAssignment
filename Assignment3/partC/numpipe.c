@@ -126,7 +126,7 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
-    _buffer = kmalloc(N*sizeof(int));
+    _buffer = kmalloc(N*sizeof(int),GFP_ATOMIC);
     if (error) {
         printk(KERN_ALERT "misc_register error: %d!\n",error);
         return error;
