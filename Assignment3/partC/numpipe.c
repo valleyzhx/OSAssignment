@@ -12,14 +12,18 @@
 
 MODULE_LICENSE("DUAL BSD/GPL");
 
-#define N 10
+//#define N 10
+static int N = 10;
+module_param(N, int, S_IRUGO);
+
+
 static struct semaphore _mutex ;//lock
 static struct semaphore _empty ;
 static struct semaphore _full ;
 
 
 static int _open_count = 0;
-static int _buffer[N];
+static int *_buffer;
 static int _index = 0;
 
 
@@ -122,7 +126,7 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
-    
+    _buffer = kmalloc(N*sizeof(int));
     if (error) {
         printk(KERN_ALERT "misc_register error: %d!\n",error);
         return error;
@@ -138,6 +142,7 @@ int __init my_init(void)
 void __exit my_exit(void)
 {
     misc_deregister(&my_misc_device);
+    kzalloc(_buffer);
     printk(KERN_ALERT "Exit!!\n");
 }
 
