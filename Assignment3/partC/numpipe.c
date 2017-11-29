@@ -17,6 +17,7 @@ static int N = 10;
 module_param(N, int, S_IRUGO);
 
 
+
 static struct semaphore _mutex ;//lock
 static struct semaphore _empty ;
 static struct semaphore _full ;
@@ -24,7 +25,9 @@ static struct semaphore _full ;
 
 static int _open_count = 0;
 static int *_buffer;
-static int _index = 0;
+static int _count = 0;
+//static int *_temp;
+
 
 
 static int my_open(struct inode *inode, struct file *file);
@@ -63,11 +66,14 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         down_interruptible(&_full);
         down_interruptible(&_mutex);
         
-        int process = _buffer[_index-1];
+        int process = _buffer[0];
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
-            _index--;
-            printk(KERN_ALERT "read from %d, now items number: %d\n", process,_index);
+            _count--;
+            for (int i=0; i<_count-1; i++) {
+                _buffer[i] = _buffer[i+1];
+            }
+            //printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
@@ -89,9 +95,9 @@ static ssize_t my_write(struct file *file, int __user *buf,
     int process;
     int err = copy_from_user(&process,buf,len);
     if (err == SUCCESS) {
-        _buffer[_index] = process;
-        _index++;
-        printk(KERN_ALERT "write process %d, now items number: %d\n", process,_index);
+        _buffer[_count] = process;
+        _count++;
+        //printk(KERN_ALERT "write process %d, now items number: %d\n", process,_count);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
