@@ -63,10 +63,10 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         down_interruptible(&_full);
         down_interruptible(&_mutex);
         int process = _buffer[_index];
-        _index--;
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
-            printk(KERN_ALERT "read %d, length: %d\n", process,_index);
+            _index--;
+            printk(KERN_ALERT "read process %d, length: %d\n", process,_index);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
@@ -85,11 +85,12 @@ static ssize_t my_write(struct file *file, int __user *buf,
     
     down_interruptible(&_empty);
     down_interruptible(&_mutex);
-    int process = _buffer[_index];
-    _index++;
+    int process;
     int err = copy_from_user(&process,buf,len);
     if (err == SUCCESS) {
-        printk(KERN_ALERT "write %d, length: %d\n", *buf,_index);
+        _buffer[_index] = process;
+        _index++;
+        printk(KERN_ALERT "write process %d, length: %d\n", *buf,_index);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
@@ -126,7 +127,7 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
-    _buffer = kmalloc(N*sizeof(int),GFP_KERNEL);
+    _buffer = (int*)kmalloc(N*sizeof(int),GFP_KERNEL);
     if (error) {
         printk(KERN_ALERT "misc_register error: %d!\n",error);
         return error;
