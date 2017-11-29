@@ -18,7 +18,7 @@ static struct semaphore _empty ;
 static struct semaphore _full ;
 
 
-static int _isOpen = 0;
+static int _open_count = 0;
 static int _buffer[N];
 static int _index = 0;
 
@@ -36,10 +36,9 @@ static int my_open(struct inode *inode, struct file *file)
     
     printk(KERN_ALERT "Open!\n");
     
-    if (_isOpen) return -EBUSY;
     try_module_get(THIS_MODULE);//if it fails, then the module is being removed and you should act as if it wasn't there.
     
-    _isOpen = 1;
+    _open_count ++;
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
@@ -48,7 +47,7 @@ static int my_open(struct inode *inode, struct file *file)
 }
 static int my_close(struct inode *inodep, struct file *file)
 {
-    _isOpen = 0;
+    _open_count--;
     module_put(THIS_MODULE); // Decrement the usage count
     printk(KERN_ALERT "Close! \n");
     
