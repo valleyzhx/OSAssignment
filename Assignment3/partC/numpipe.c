@@ -63,7 +63,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         down_interruptible(&_full);
         down_interruptible(&_mutex);
         int process = _buffer[_index--];
-        err = copy_to_user(out,process,len);
+        err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
             printk(KERN_ALERT "read %d, length: %d\n", process,_index);
         }else{
@@ -85,7 +85,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
     down_interruptible(&_empty);
     down_interruptible(&_mutex);
     
-    int err = copy_from_user(_buffer[_index++],buf,len);
+    int err = copy_from_user(&_buffer[_index++],buf,len);
     if (err == SUCCESS) {
         printk(KERN_ALERT "write %d, length: %d\n", buf,_index);
     }else{
