@@ -84,8 +84,8 @@ static ssize_t my_write(struct file *file, int __user *buf,
     
     down_interruptible(&_empty);
     down_interruptible(&_mutex);
-    
-    int err = copy_from_user(&_buffer[_index++],buf,len);
+    int process = _buffer[_index++];
+    int err = copy_from_user(&process,buf,len);
     if (err == SUCCESS) {
         printk(KERN_ALERT "write %d, length: %d\n", buf,_index);
     }else{
