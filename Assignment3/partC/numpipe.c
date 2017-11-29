@@ -90,7 +90,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
     if (err == SUCCESS) {
         _buffer[_index] = process;
         _index++;
-        printk(KERN_ALERT "write process %d, length: %d\n", *buf,_index);
+        printk(KERN_ALERT "write process %d, length: %d\n", process,_index);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
