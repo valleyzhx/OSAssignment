@@ -14,31 +14,42 @@
 
 int main(int argc, char *argv[])
 {
-    int fd = open("/dev/numpipe", O_RDWR);
-	char numstr[MAXLEN];
-	int num_to_write;
-    if(fd<0){
-        printf("open /dev/numpipe Error: %d\n",fd);
-        return fd;
+    int fd;
+    char numstr[MAXLEN];
+    int count = 0;
+    int num_to_write;
+    
+    if( argc != 2) {
+        printf("Usage: %s <numpipe_name>\n", argv[0]);
+        exit(1);
     }
-    int count=0;
-	while(1) {
-		bzero(numstr, MAXLEN);
-        sprintf(numstr, "%d\n", getpid());
-		num_to_write = atoi(numstr);
-		// write to pipe
-		ssize_t ret = write(fd, &num_to_write, sizeof(int));
-		if ( ret < 0) {
-			fprintf(stderr, "error writing ret=%ld errno=%d perror: ", ret, errno);
-			perror("");
-		} else {
-            printf("%d produce times:%d, Bytes written: %ld\n", num_to_write,++count,ret);
-		}
-		sleep(1);
-	}
-
-	close(fd);
-
-	return 0;
+    
+    if ( (fd = open(argv[1], O_WRONLY)) < 0) {
+        perror(""); printf("error opening %s\n", argv[1]);
+        exit(1);
+    }
+    
+    // Prevent producer from dying due to SIGPIPE when last consumer quits
+    signal(SIGPIPE, SIG_IGN);
+    
+    while(1) {
+        bzero(numstr, MAXLEN);
+        sprintf(numstr, "%d%d\n", getpid(), count++);
+        num_to_write = atoi(numstr);
+        printf("Writing: %d", num_to_write);
+        
+        // write to pipe
+        ssize_t ret = write(fd, &num_to_write, sizeof(int));
+        if ( ret < 0) {
+            fprintf(stderr, "error writing ret=%ld errno=%d perror: ", ret, errno);
+            perror("");
+        } else {
+            printf("Bytes written: %ld\n", ret);
+        }
+        sleep(1);
+    }
+    
+    close(fd);
+    
+    return 0;
 }
-
