@@ -142,7 +142,7 @@ int __init my_init(void)
 void __exit my_exit(void)
 {
     misc_deregister(&my_misc_device);
-    kzalloc(_buffer);
+    kfree(_buffer);
     printk(KERN_ALERT "Exit!!\n");
 }
 
