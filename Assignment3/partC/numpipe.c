@@ -142,7 +142,7 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
-    sema_init(&_index_lock, 1);
+    //sema_init(&_index_lock, 1);
 
     _buffer = (int*)kmalloc(N*sizeof(int),GFP_KERNEL);
     if (error) {
