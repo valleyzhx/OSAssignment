@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-    int fd = open("/dev/numpipe", O_WRONLY);
+    int fd = open("/dev/numpipe", O_RDWR);
 	char numstr[MAXLEN];
 	int num_to_write;
     if(fd<0){
