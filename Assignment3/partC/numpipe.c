@@ -67,7 +67,7 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
             _index--;
-            printk(KERN_ALERT "read process %d, length: %d\n", process,_index);
+            printk(KERN_ALERT "read from %d, now items number: %d\n", process,_index);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
@@ -91,7 +91,7 @@ static ssize_t my_write(struct file *file, int __user *buf,
     if (err == SUCCESS) {
         _buffer[_index] = process;
         _index++;
-        printk(KERN_ALERT "write process %d, length: %d\n", process,_index);
+        printk(KERN_ALERT "write process %d, now items number: %d\n", process,_index);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
