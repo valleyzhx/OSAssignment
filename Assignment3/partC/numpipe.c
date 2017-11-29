@@ -70,7 +70,8 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
             _count--;
-            for (int i=0; i<_count-1; i++) {
+            int i=0;
+            for (i=0; i<_count-1; i++) {
                 _buffer[i] = _buffer[i+1];
             }
             //printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
