@@ -18,10 +18,11 @@ module_param(N, int, S_IRUGO);
 
 
 
-static struct semaphore _mutex ;//lock
-static struct semaphore _empty ;
-static struct semaphore _full ;
+static struct semaphore _mutex;//lock
+static struct semaphore _empty;
+static struct semaphore _full;
 
+static struct semaphore _index_lock;
 
 static int _open_count = 0;
 static int *_buffer;
@@ -69,11 +70,14 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
         int process = _buffer[0];
         err = copy_to_user(out,&process,len);
         if (err == SUCCESS) {
-            _count--;
+            down_interruptible(&_index_lock);
             int i=0;
             for (i=0; i<_count-1; i++) {
                 _buffer[i] = _buffer[i+1];
             }
+            _count--;
+            up(&_index_lock);
+
             //printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
@@ -96,8 +100,11 @@ static ssize_t my_write(struct file *file, int __user *buf,
     int process;
     int err = copy_from_user(&process,buf,len);
     if (err == SUCCESS) {
+        down_interruptible(&_index_lock);
         _buffer[_count] = process;
         _count++;
+        up(&_index_lock);
+
         //printk(KERN_ALERT "write process %d, now items number: %d\n", process,_count);
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
@@ -135,6 +142,9 @@ int __init my_init(void)
     sema_init(&_mutex, 1);
     sema_init(&_full, 0);
     sema_init(&_empty, N);
+    
+    sema_init(&_index_lock, 1);
+
     _buffer = (int*)kmalloc(N*sizeof(int),GFP_KERNEL);
     if (error) {
         printk(KERN_ALERT "misc_register error: %d!\n",error);
