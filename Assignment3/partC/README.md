@@ -7,4 +7,4 @@
 7. stop: control+c
 
 ![Image of Yaktocat]
-(https://imgur.com/jwkauFE)
+(https://i.imgur.com/jwkauFE.jpg)
