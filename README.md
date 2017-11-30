@@ -1,3 +1,3 @@
 # OSAssignment
 
-![alt tag](https://i.imgur.com/jwkauFE.jpg=250x250)
+![alt tag](https://i.imgur.com/jwkauFE.jpg =250x)
