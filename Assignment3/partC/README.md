@@ -5,3 +5,6 @@
 5. start producer: ./producer /dev/numpipe
 6. start consumer: ./consumer /dev/numpipe
 7. stop: control+c
+
+![Image of Yaktocat]
+(https://imgur.com/jwkauFE)
