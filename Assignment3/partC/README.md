@@ -6,5 +6,3 @@
 6. start consumer: ./consumer /dev/numpipe
 7. stop: control+c
 
-![Image of Yaktocat]
-(https://i.imgur.com/jwkauFE.jpg)
