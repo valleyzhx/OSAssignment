@@ -82,7 +82,12 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
             up(&_mutex);
             up(&_empty);
         }else{
-            printk(KERN_ALERT "Copy Error:%d\n",err);
+            
+            if (err != SUCCESS) {
+                printk(KERN_ALERT "Copy Error:%d\n",err);
+            }else{
+                printk(KERN_ALERT "the count %d try to read, maybe cause by interrupt\n",_count-1);
+            }
             up(&_mutex);
         }
 
@@ -110,7 +115,11 @@ static ssize_t my_write(struct file *file, int __user *buf,
         up(&_mutex);
         up(&_full);
     }else{
-        printk(KERN_ALERT "Copy Error:%d\n",err);
+        if (err!=SUCCESS) {
+            printk(KERN_ALERT "Copy Error:%d\n",err);
+        }else{
+            printk(KERN_ALERT "the count %d try to write, maybe cause by interrupt\n",_count+1);
+        }
         up(&_mutex);
     }
 
