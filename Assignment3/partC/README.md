@@ -5,4 +5,5 @@
 5. start producer: ./producer /dev/numpipe
 6. start consumer: ./consumer /dev/numpipe
 7. stop: control+c
+8. rmmod numpipe
 

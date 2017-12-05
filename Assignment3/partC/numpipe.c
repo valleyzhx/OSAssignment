@@ -79,11 +79,11 @@ static ssize_t my_read(struct file *file, int __user *out, size_t len, loff_t *p
             //up(&_index_lock);
 
             printk(KERN_ALERT "read from %d, now items number: %d\n", process,_count);
+            up(&_empty);
         }else{
             printk(KERN_ALERT "Copy Error:%d\n",err);
         }
         up(&_mutex);
-        up(&_empty);
 
     }else{
         return -EFAULT;
@@ -106,12 +106,13 @@ static ssize_t my_write(struct file *file, int __user *buf,
         //up(&_index_lock);
 
         printk(KERN_ALERT "write process %d, now items number: %d\n", process,_count);
+        up(&_full);
+
     }else{
         printk(KERN_ALERT "Copy Error:%d\n",err);
     }
 
     up(&_mutex);
-    up(&_full);
     return len;
 }
 
